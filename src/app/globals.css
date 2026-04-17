@@ -1,26 +1,188 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * Precision Ledger — design tokens.
+ * Structure defined by tonal shifts and 1px gap rule, never 1px borders.
+ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+
+  /* Surface stack (dark, default) */
+  --color-surface: oklch(18.8% 0.037 270);
+  --color-surface-container-lowest: oklch(16% 0.035 270);
+  --color-surface-container-low: oklch(21.5% 0.042 270);
+  --color-surface-container: oklch(23.5% 0.045 270);
+  --color-surface-container-high: oklch(27.5% 0.048 270);
+  --color-surface-container-highest: oklch(31.5% 0.05 272);
+  --color-surface-bright: oklch(36% 0.053 272);
+
+  --color-outline: oklch(55% 0.03 270);
+  --color-outline-variant: oklch(40% 0.025 270);
+
+  /* Accents */
+  --color-primary: oklch(82% 0.09 274);           /* #b7c4ff */
+  --color-primary-container: oklch(49% 0.24 269); /* #0052ff */
+  --color-on-primary: oklch(18% 0.045 270);
+  --color-primary-fixed: oklch(82% 0.09 274);
+  --color-on-primary-fixed: oklch(18% 0.045 270);
+
+  --color-secondary: oklch(87% 0.15 92);          /* #fabd00 — Win-Rate Gold */
+  --color-secondary-container: oklch(87% 0.15 92);
+  --color-on-secondary: oklch(18% 0.045 270);
+
+  --color-tertiary: oklch(70% 0.14 230);          /* azure */
+  --color-tertiary-container: oklch(38% 0.11 270); /* cool low-WR */
+
+  --color-surface-variant: oklch(40% 0.03 270);
+
+  /* Status */
+  --color-success: oklch(75% 0.17 145);
+  --color-danger: oklch(66% 0.21 25);
+  --color-warning: oklch(80% 0.17 80);
+
+  /* On-surface text */
+  --color-on-surface: oklch(90% 0.03 274);        /* #dae2fd */
+  --color-on-surface-muted: oklch(72% 0.025 274);
+  --color-on-surface-dim: oklch(58% 0.02 274);
+
+  /* Radii — Precision Ledger stays sharp */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* Animation easings */
+  --ease-precision: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-ledger: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@media (prefers-color-scheme: dark) {
+/* Light theme */
+:root.light {
+  --color-surface: oklch(98% 0.003 270);
+  --color-surface-container-lowest: oklch(99% 0.003 270);
+  --color-surface-container-low: oklch(96% 0.005 270);
+  --color-surface-container: oklch(93.5% 0.008 270);
+  --color-surface-container-high: oklch(90% 0.01 270);
+  --color-surface-container-highest: oklch(86% 0.015 270);
+  --color-surface-bright: oklch(99% 0.003 270);
+
+  --color-outline: oklch(50% 0.03 270);
+  --color-outline-variant: oklch(80% 0.015 270);
+
+  --color-primary: oklch(49% 0.24 269);
+  --color-primary-container: oklch(49% 0.24 269);
+  --color-on-primary: oklch(99% 0 0);
+  --color-primary-fixed: oklch(72% 0.12 274);
+  --color-on-primary-fixed: oklch(18% 0.045 270);
+
+  --color-secondary: oklch(72% 0.18 80);
+  --color-secondary-container: oklch(87% 0.15 92);
+  --color-on-secondary: oklch(18% 0.045 270);
+
+  --color-on-surface: oklch(22% 0.04 270);
+  --color-on-surface-muted: oklch(42% 0.025 270);
+  --color-on-surface-dim: oklch(58% 0.02 270);
+
+  --color-surface-variant: oklch(82% 0.015 270);
+  --color-tertiary-container: oklch(80% 0.08 270);
+}
+
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: dark;
+  }
+  :root.light {
+    color-scheme: light;
+  }
+  html,
+  body {
+    background: var(--color-surface);
+    color: var(--color-on-surface);
+  }
+  body {
+    font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-feature-settings: "cv11", "ss01", "ss03";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Tabular-lining numerals for all mono text */
+  .font-mono,
+  code,
+  kbd,
+  samp,
+  pre {
+    font-feature-settings: "tnum" on, "lnum" on, "calt" off;
+  }
+
+  ::selection {
+    background: color-mix(in oklch, var(--color-primary) 40%, transparent);
+    color: var(--color-on-surface);
+  }
+
+  /* Keyboard focus ring — 2px offset, primary tint */
+  :focus-visible {
+    outline: 2px solid var(--color-primary-fixed);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
+  /* Scrollbars — match surface aesthetic */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-surface-container-highest) transparent;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .font-display {
+    font-family: var(--font-inter), ui-sans-serif, sans-serif;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+  }
+
+  .font-headline {
+    font-family: var(--font-inter), ui-sans-serif, sans-serif;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+  }
+
+  .font-label {
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.6875rem;
+    font-weight: 500;
+  }
+
+  .font-numeric {
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  .ghost-border {
+    box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--color-outline-variant) 15%, transparent);
+  }
+
+  .elev-floating {
+    box-shadow: 0 4px 20px color-mix(in oklch, var(--color-surface) 60%, transparent);
+  }
+
+  /* Gradient CTA */
+  .cta-primary {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-container));
+    color: var(--color-on-primary);
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
